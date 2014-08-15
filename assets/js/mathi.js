@@ -126,25 +126,15 @@ var Mathi = Mathi || {};
                     $(this).blur();
                 }
             });     
-            /*
-            // Numbers buttons
-            form.find('.number').each(function(i, elem) {
-                $(elem).on('click', function(e) {
-                    e.preventDefault();
-
-                    obj.model.set({
-                        response : obj.model.get('response') + $(this).html()
-                    });
-
-                    $(this).blur();                    
-                });
-            });  */
-
+           
             // Equal's button
-            form.find('.equal').on('click', function(evt) {
-                form.submit();
-                evt.preventDefault();
-            });
+            form.find('.equal').fasttap({
+                callback: function (event) {
+                    form.submit();
+
+                    $(this).blur();
+                }
+            });     
 
             // User sends response
             form.submit(function(evt) {                
