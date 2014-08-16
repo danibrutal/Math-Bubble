@@ -14,8 +14,7 @@
                 pop = function () {
                     coordinates.splice(0, 2);
                 },
-                onClick = function (event) {   
-                console.log("hehehe");               
+                onClick = function (event) {            
                     for (var i = 0; i < coordinates.length; i += 2) {
                         var x = coordinates[i],
                             y = coordinates[i + 1];

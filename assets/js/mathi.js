@@ -3,24 +3,26 @@ var Mathi = Mathi || {};
 (function () {
     'use strict';
 
-    var fps = 30;
+    var fps = 60;
     var interval = 1000 / fps;
 
     var rnd = function(min, max){
-        var r= Math.floor((Math.random() * max) + min);
-        return r;
+        return Math.floor((Math.random() * max) + min);
     };
 
-    Mathi.animating = false;
+    Mathi.gameOver = false;
 
     Mathi.draw = function() {
 
         setTimeout(function() {
-            window.requestAnimationFrame(Mathi.draw);
 
-            Mathi.challenge.set({
-                time: Mathi.challenge.get('time') + 1
-            });
+            if (! Mathi.gameOver) {                
+                Mathi.challenge.set({
+                    time: Mathi.challenge.get('time') + 1
+                });
+
+                window.requestAnimationFrame(Mathi.draw);
+            }
 
         }, interval);
     },
@@ -67,12 +69,42 @@ var Mathi = Mathi || {};
         
         var cView = new Mathi.ChallengeView({
             userResponse: new Mathi.UserResponse(),
+            userScore: new Mathi.Score(),
             el: element,
             model: this.challenge
         });
 
-        //Mathi.draw();
+        Mathi.draw();
     };
+
+    Mathi.Score = Backbone.Model.extend({
+        defaults: {
+            points: 0
+        }
+    });
+
+    Mathi.ScoreView = Backbone.View.extend( {
+        className: 'wrapper-points',
+        template: _.template( $('#user-score-tpl').html() ),
+
+        initialize: function() {  
+            this.listenTo(this.model, "change:points", this.addPoints);       
+        },
+
+        addPoints: function(model, points) {
+            $('#mathi-points').html(
+                model.get('points')
+            );
+        },
+
+        render: function() {
+            this.$el.html(
+                this.template( this.model.toJSON() )
+            );
+
+            return this;
+        }
+    });
 
     Mathi.UserResponse = Backbone.Model.extend({
         defaults: {
@@ -156,7 +188,6 @@ var Mathi = Mathi || {};
             expression: '',
             solution: 0,
             time: 0,
-            points: 0,
             wrong: 0,
             ok: 0,
             gameOver: false
@@ -166,21 +197,33 @@ var Mathi = Mathi || {};
     Mathi.ChallengeView = Backbone.View.extend({
 
         userResponse : null, // model
+        userScore: null, // model
         template: _.template( $('#challenge-tpl').html() ),
         $ball: null,
 
         initialize: function(options) {
             this.userResponse = options.userResponse;                    
+            this.userScore = options.userScore;                    
 
             this.listenTo(this.model, "change:expression", this.drawChallenge);
             this.listenTo(this.model, "change:wrong", this.showWrong);
             this.listenTo(this.model, "change:ok", this.showOk);
             this.listenTo(this.model, "change:time", this.addTime);
-            this.listenTo(this.model, "change:points", this.addPoints);
+            this.listenTo(this.model, "change:gameOver", this.showGameOver);
             this.listenTo(this.userResponse, "change:fired", this.compareUserSolution);
-            this.render( this.userResponse );
+            this.render( this.userResponse, this.userScore);
             this.initEvents();
             this.$ball = this.$el.find('#mathi-ball');
+        },
+
+        showGameOver : function(model, gameOver) {
+            if (gameOver) {
+                Mathi.gameOver = true;
+
+                this.$el.find('.mathi-expression').html(
+                    '<span class="game-over">Game over !</span>'
+                );    
+            }
         },
 
         compareUserSolution : function(userResponse, fired) {
@@ -191,11 +234,12 @@ var Mathi = Mathi || {};
                     currentColor = obj.$ball.css('backgroundColor');
 
                 if (response != this.model.get('solution')) {
+                    
                     obj.model.set({
-                        wrong : obj.model.get('wrong') + 1,
-                        points: obj.model.get('points') - 5
+                        wrong : obj.model.get('wrong') + 1                        
                     });
 
+                    obj.userScore.set('points', obj.userScore.get('points') - 5);
                     obj.$ball.addClass('notransition').css({backgroundColor: 'red'});
 
                     setTimeout(function() {
@@ -209,10 +253,10 @@ var Mathi = Mathi || {};
                 } else { // ok
                     obj.model.set({
                         ok    : obj.model.get('ok') + 1,
-                        time  : 0,
-                        points: obj.model.get('points') + 10 
+                        time  : 0
                     });
 
+                    obj.userScore.set('points', obj.userScore.get('points') + 10);
                     obj.$ball.addClass('notransition').css({backgroundColor: 'green'});
 
                     setTimeout(function() {
@@ -235,12 +279,6 @@ var Mathi = Mathi || {};
                     obj.model.set('gameOver', true);
                 });
             },100);            
-        },
-
-        addPoints: function(model, points) {
-            $('#mathi-points').html(
-                model.get('points')
-            );
         },
 
         addTime : function(model, time) {
@@ -270,7 +308,7 @@ var Mathi = Mathi || {};
             this.$el.find('.mathi-expression').html(exp);              
         },
 
-        render: function(userResponse) {      
+        render: function(userResponse, userScore) {      
 
             this.$el.html(
                 this.template( this.model.toJSON() )
@@ -278,11 +316,12 @@ var Mathi = Mathi || {};
 
             var userPanelView = new Mathi.UserPanelView({
                 model: userResponse
+            }), userScoreView = new Mathi.ScoreView({
+                model: userScore
             });
 
-            this.$el.append(
-                userPanelView.render().el
-            );
+            this.$el.append( userPanelView.render().el );
+            this.$el.append( userScoreView.render().el );
 
             userPanelView.initEvents();
 

@@ -21,39 +21,38 @@
 
 </script>
 </head>
-<body class='use-fastclick'>
+<body>
     
     <section id="app">
         <div id="game-wrapper"></div>
     </section>
 
-    <script type="text/template" id="challenge-tpl"> 
-        <div class="wrapper-points">
-            <label>Pts:</label>
-            <span id="mathi-points"><%- points %></span>
-        </div>
+    <script type="text/template" id="user-score-tpl">
+        <label>Pts:</label>
+        <span id="mathi-points"><%- points %></span>        
+    </script>
 
+    <script type="text/template" id="challenge-tpl"> 
         <div class="wrapper-ball">
             <div id="mathi-ball">
                 <div id="test" class="mathi-expression"><%- expression %></div>
             </div>
-        </div>
-        
+        </div>        
     </script> 
 
     <script type="text/template" id="user-panel-tpl">                
         <form action="./" id="mathi-solution-form">
             <input type="text" value="" placeholder="Solution" id="mathi-solution"/>
-                <button class="number fastClick">1</button>
-                <button class="number fastClick">2</button>
-                <button class="number fastClick">3</button>
-                <button class="number fastClick">4</button>
-                <button class="number fastClick">5</button>
-                <button class="number fastClick">6</button>
-                <button class="number fastClick">7</button>
-                <button class="number fastClick">8</button>
-                <button class="number fastClick">9</button>
-                <button class="number fastClick">0</button>
+                <button class="number">1</button>
+                <button class="number">2</button>
+                <button class="number">3</button>
+                <button class="number">4</button>
+                <button class="number">5</button>
+                <button class="number">6</button>
+                <button class="number">7</button>
+                <button class="number">8</button>
+                <button class="number">9</button>
+                <button class="number">0</button>
                 <button class="equal">=</button>
                 <div class="clear"></div>
         </form> 
