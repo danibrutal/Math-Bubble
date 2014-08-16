@@ -23,7 +23,6 @@ var Mathi = Mathi || {};
 
                 window.requestAnimationFrame(Mathi.draw);
             }
-
         }, interval);
     },
 
@@ -149,23 +148,21 @@ var Mathi = Mathi || {};
             this.userInput = $('#mathi-solution');
 
             // fast buttons
-            form.find('button.number').fasttap({
-                callback: function (event) {
-                    obj.model.set({
-                        response : obj.model.get('response') + $(this).html()
-                    });
+            form.find('.number').on('tap', function (event) {
+                obj.model.set({
+                    response : obj.model.get('response') + $(this).html()
+                });
 
-                    $(this).blur();
-                }
+                $(this).blur();
+                event.preventDefault();
             });     
            
             // Equal's button
-            form.find('.equal').fasttap({
-                callback: function (event) {
-                    form.submit();
+            form.find('.equal').on('tap', function (event) {
+                form.submit();
 
-                    $(this).blur();
-                }
+                $(this).blur();
+                event.preventDefault();                
             });     
 
             // User sends response
@@ -178,6 +175,7 @@ var Mathi = Mathi || {};
         },
 
         handleUserResponse: function(model, userResponse) {
+            console.log(userResponse);
             this.userInput.val( userResponse );
         }
 
@@ -222,7 +220,8 @@ var Mathi = Mathi || {};
 
                 this.$el.find('.mathi-expression').html(
                     '<span class="game-over">Game over !</span>'
-                );    
+                );   
+                this.stopListening(); 
             }
         },
 

@@ -132,9 +132,9 @@ body {
     border-radius: 12em; 
     background-color: green;
     color: white;   
-    transition: background-color 16s linear; 
-    -moz-transition: background-color 16s linear; 
-    -webkit-transition: background-color 16s linear; 
+    transition: background-color 10s linear; 
+    -moz-transition: background-color 10s linear; 
+    -webkit-transition: background-color 10s linear; 
 }
 .game-over {
     font-size: 0.6em;
