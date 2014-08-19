@@ -78,7 +78,8 @@ var Mathi = Mathi || {};
 
     Mathi.Score = Backbone.Model.extend({
         defaults: {
-            points: 0
+            points:   0,
+            accuracy: 0
         }
     });
 
@@ -88,18 +89,19 @@ var Mathi = Mathi || {};
 
         initialize: function() {  
             this.listenTo(this.model, "change:points", this.addPoints);       
+            this.listenTo(this.model, "change:accuracy", this.showAcc);       
         },
 
         addPoints: function(model, points) {
-            $('#mathi-points').html(
-                model.get('points')
-            );
+            $('#mathi-points').html( points );
+        },
+
+        showAcc: function(model, acc) {
+            $('#mathi-accuracy').html( acc );
         },
 
         render: function() {
-            this.$el.html(
-                this.template( this.model.toJSON() )
-            );
+            this.$el.html( this.template( this.model.toJSON() ) );
 
             return this;
         }
@@ -175,7 +177,6 @@ var Mathi = Mathi || {};
         },
 
         handleUserResponse: function(model, userResponse) {
-            console.log(userResponse);
             this.userInput.val( userResponse );
         }
 
@@ -201,7 +202,7 @@ var Mathi = Mathi || {};
 
         initialize: function(options) {
             this.userResponse = options.userResponse;                    
-            this.userScore = options.userScore;                    
+            this.userScore    = options.userScore;                    
 
             this.listenTo(this.model, "change:expression", this.drawChallenge);
             this.listenTo(this.model, "change:wrong", this.showWrong);
@@ -217,10 +218,18 @@ var Mathi = Mathi || {};
         showGameOver : function(model, gameOver) {
             if (gameOver) {
                 Mathi.gameOver = true;
+                var exp = this.$el.find('.mathi-expression');
 
-                this.$el.find('.mathi-expression').html(
-                    '<span class="game-over">Game over !</span>'
-                );   
+                exp.html( '<span class="game-over">Game over !</span>'); 
+                setTimeout(function() {
+                    var replay = $('<a class="replay" href="#"><img src="assets/images/replay-icon.png" /></a>');
+                    exp.html(replay);
+
+                    replay.click(function() {
+                        Mathi.init('#game-wrapper');
+                    });
+                },1000);  
+
                 this.stopListening(); 
             }
         },
@@ -264,6 +273,11 @@ var Mathi = Mathi || {};
 
                     obj.model.set( Mathi.generateChallenge() );
                 }
+
+                obj.userScore.set('accuracy', 
+                    (obj.model.get('ok') / (obj.model.get('ok') + obj.model.get('wrong'))).toFixed(1)
+                    * 100
+                );
             }
             
         },
