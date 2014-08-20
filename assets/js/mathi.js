@@ -213,10 +213,16 @@ var Mathi = Mathi || {};
             this.render( this.userResponse, this.userScore);
             this.initEvents();
             this.$ball = this.$el.find('#mathi-ball');
+
+            this.YUHU = new Howl({urls: ['assets/sounds/yuhu.wav', 'assets/sounds/yuhu.ogg']});
+            this.DO = new Howl({urls: ['assets/sounds/do.wav','assets/sounds/do.ogg']});
+            this.HAHA = new Howl({urls: ['assets/sounds/haha.wav','assets/sounds/haha.ogg']});
+
         },
 
         showGameOver : function(model, gameOver) {
             if (gameOver) {
+                this.HAHA.play();
                 Mathi.gameOver = true;
                 var exp = this.$el.find('.mathi-expression');
 
@@ -235,13 +241,14 @@ var Mathi = Mathi || {};
         },
 
         compareUserSolution : function(userResponse, fired) {
-            if (fired) {
+            if (fired) {                
 
                var response = userResponse.get('response'), 
                     obj = this, 
                     currentColor = obj.$ball.css('backgroundColor');
 
                 if (response != this.model.get('solution')) {
+                    this.DO.play();
                     
                     obj.model.set({
                         wrong : obj.model.get('wrong') + 1                        
@@ -259,6 +266,8 @@ var Mathi = Mathi || {};
                     },300);
 
                 } else { // ok
+                    this.YUHU.play();
+
                     obj.model.set({
                         ok    : obj.model.get('ok') + 1,
                         time  : 0

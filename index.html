@@ -5,8 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Math Bubble !</title>
-
 <link href="assets/css/styles.css" rel="stylesheet">
+
+<!--Requirejs main file --
+<script data-main="app" src="lib/require.js"></script>
+-->
  <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -43,19 +46,19 @@
     
     <script type="text/template" id="user-panel-tpl">                
         <form action="./" id="mathi-solution-form">
-                <input type="text" value="" placeholder="Solution" id="mathi-solution"/>
-                <button class="number">1</button>
-                <button class="number">2</button>
-                <button class="number">3</button>
-                <button class="number">4</button>
-                <button class="number">5</button>
-                <button class="number">6</button>
-                <button class="number">7</button>
-                <button class="number">8</button>
-                <button class="number">9</button>
-                <button class="number">0</button>
-                <button class="equal">=</button>
-                <div class="clear"></div>
+            <input type="text" value="" placeholder="Solution" id="mathi-solution"/>
+            <button class="number">1</button>
+            <button class="number">2</button>
+            <button class="number">3</button>
+            <button class="number">4</button>
+            <button class="number">5</button>
+            <button class="number">6</button>
+            <button class="number">7</button>
+            <button class="number">8</button>
+            <button class="number">9</button>
+            <button class="number">0</button>
+            <button class="equal">=</button>
+            <div class="clear"></div>
         </form> 
         <div class="clear"></div>
     </script>      
@@ -66,10 +69,10 @@
     <script src="assets/js/jquery-animate-css-rotate-scale.js"></script>
     <script src="assets/js/requestAnimationFrame.js"></script>
     <script src="assets/js/jquery.tap.js"></script>
+    <script src="assets/js/howlerjs.js"></script>
     <script src="assets/js/mathi.js"></script>
 
     <script type="text/javascript">
-    
         $(function() {  
             Mathi.init('#game-wrapper');
         });  
