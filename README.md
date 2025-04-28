@@ -6,5 +6,3 @@ I know, there's a lot of brain games already made, but I just wanted to make my 
 Is meant to be multi-device, so it should work on mobiles, tablets, and desktop.
 
 Very handy when you go to work :)
-
-You can play [here](http://testdouble.es/math-bubble/)
